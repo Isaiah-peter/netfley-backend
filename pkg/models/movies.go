@@ -5,9 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var (
-	db *gorm.DB
-)
+var ()
 
 type Movies struct {
 	gorm.Model
@@ -16,11 +14,11 @@ type Movies struct {
 	Img      string
 	ImgTitle string
 	ImgSm    string
-	trailer  string
+	Trailer  string
 	Video    string
 	Year     string
 	Limit    int
-	genre    string
+	Genre    string
 	IsSeries bool `gorm:"default:false"`
 }
 

@@ -21,10 +21,7 @@ type User struct {
 }
 
 type Token struct {
-	gorm.Model
 	UserID  int
-	Name    string
-	Email   string
 	IsAdmin bool
 	jwt.StandardClaims
 }
@@ -50,4 +47,16 @@ func GetUser() []User {
 	var User []User
 	db.Find(&User)
 	return User
+}
+
+func GetUserById(Id int64) (*User, *gorm.DB) {
+	var getUser User
+	db := db.Where("ID=?", Id).Find(&getUser)
+	return &getUser, db
+}
+
+func DeleteUser(Id int64) User {
+	var user User
+	db.Where("ID=?", Id).Delete(user)
+	return user
 }

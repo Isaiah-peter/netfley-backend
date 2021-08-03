@@ -8,5 +8,4 @@ import (
 var RegisterNetflixUser = func(router *mux.Router) {
 	router.HandleFunc("/register/", controllers.NewUser).Methods("POST")
 	router.HandleFunc("/login", controllers.Login).Methods("POST")
-	router.HandleFunc("/register/", controllers.GetUser).Methods("GET")
 }

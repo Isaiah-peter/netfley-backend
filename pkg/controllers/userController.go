@@ -3,8 +3,9 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
-	"strings"
+	"strconv"
 	"time"
 
 	"github.com/Isaiah-peter/netfley-backend/pkg/config"
@@ -85,46 +86,85 @@ func FindOne(email string, password string) map[string]interface{} {
 	return resp
 }
 
-func ExtractToken(r *http.Request) string {
-	bearToken := r.Header.Get("Authorization")
-	strArr := strings.Split(bearToken, " ")
-	if len(strArr) == 2 {
-		return strArr[1]
-	}
-	return ""
-}
-
-func VerifyToken(r *http.Request) (*jwt.Token, error) {
-	tokenString := ExtractToken(r)
-	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
-		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
-			return nil, fmt.Errorf("unexpected signin method: %v", t.Header["alg"])
-		}
-		return []byte("my_secret_key"), nil
-	})
-	if err != nil {
-		return nil, err
-	}
-	return token, nil
-}
-
-func ValidToken(r *http.Request) error {
-	token, err := VerifyToken(r)
-	if err != nil {
-		return err
-	}
-	if _, ok := token.Claims.(jwt.Claims); !ok && !token.Valid {
-		return err
-	}
-	return nil
-}
-
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var user = &models.User{}
-	token, err := VerifyToken(r)
+	utils.ParseBody(r, user)
+	token, err := utils.VerifyToken(r)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println(token)
-	fmt.Println(user)
+	claim, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		panic(ok)
+	}
+
+	ID, err := strconv.ParseInt(fmt.Sprintf("%.f", claim["UserID"]), 0, 0)
+	if err != nil {
+		fmt.Println("error while parsing")
+	}
+	fmt.Println(ID)
+	userDetail, rd := models.GetUserById(ID)
+	if user.Username != "" {
+		userDetail.Username = user.Username
+		fmt.Println("userDetailfmt:", userDetail.Username)
+	}
+	if user.Email != "" {
+		userDetail.Email = user.Email
+	}
+	if user.Password != "" {
+		hashpassword, err := utils.HashPassword(user.Password)
+		if err != nil {
+			panic(err)
+		}
+		userDetail.Password = hashpassword
+	}
+	if user.ProfilePic != nil {
+		userDetail.ProfilePic = user.ProfilePic
+	}
+	rd.Save(&userDetail)
+	fmt.Println("userDetailfmt:", userDetail.Username)
+}
+
+func GetUserById(w http.ResponseWriter, r *http.Request) {
+	token, err := utils.VerifyToken(r)
+	if err != nil {
+		fmt.Println("error in verifying token or expire token")
+	}
+	claim, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		fmt.Println("token expired")
+	}
+
+	ID, err := strconv.ParseInt(fmt.Sprintf("%.f", claim["UserID"]), 0, 0)
+	if err != nil {
+		fmt.Println("error while parsing")
+		log.Fatalln(err)
+	}
+	userDetail, _ := models.GetUserById(ID)
+	res, _ := json.Marshal(userDetail)
+	w.Header().Set("Content-Type", "pkglication/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
+}
+
+func DeleteUser(w http.ResponseWriter, r *http.Request) {
+	token, err := utils.VerifyToken(r)
+	if err != nil {
+		fmt.Println("error in verifying token or expire token")
+	}
+	claim, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		fmt.Println("token expired")
+	}
+
+	ID, err := strconv.ParseInt(fmt.Sprintf("%.f", claim["UserID"]), 0, 0)
+	if err != nil {
+		fmt.Println("error while parsing")
+		log.Fatalln(err)
+	}
+	user := models.DeleteUser(ID)
+	res, _ := json.Marshal(user)
+	w.Header().Set("Content-Type", "pkglication/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write(res)
 }

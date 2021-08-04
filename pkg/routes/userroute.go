@@ -6,6 +6,8 @@ import (
 )
 
 var CrudUser = func(router *mux.Router) {
-	// router.HandleFunc("/user", controllers.GetUser).Methods("GET")
+	router.HandleFunc("/user", controllers.GetUser).Methods("GET")
 	router.HandleFunc("/user/{id}", controllers.UpdateUser).Methods("PUT")
+	router.HandleFunc("/user/{id}", controllers.GetUserById).Methods("GET")
+	router.HandleFunc("/user/{id}", controllers.DeleteUser).Methods("DELETE")
 }

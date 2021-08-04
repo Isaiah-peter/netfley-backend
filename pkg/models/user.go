@@ -45,7 +45,7 @@ func (u *User) NewUser() *User {
 
 func GetUser() []User {
 	var User []User
-	db.Find(&User)
+	db.Find(&User).Limit(10)
 	return User
 }
 

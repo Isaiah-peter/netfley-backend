@@ -41,3 +41,15 @@ func ValidToken(r *http.Request) error {
 	}
 	return nil
 }
+
+func UseToken(r *http.Request) jwt.MapClaims {
+	token, err := VerifyToken(r)
+	if err != nil {
+		panic(err)
+	}
+	claim, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		panic(ok)
+	}
+	return claim
+}

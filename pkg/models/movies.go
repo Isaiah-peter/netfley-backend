@@ -27,3 +27,29 @@ func init() {
 	db = config.GetDB()
 	db.AutoMigrate(&Movies{})
 }
+
+//CREATE
+
+func (m *Movies) CreateMovie() *Movies {
+	db.NewRecord(m)
+	db.Create(m)
+	return m
+}
+
+func GetMovieModel() []Movies {
+	var movie []Movies
+	db.Find(&movie).Limit(10)
+	return movie
+}
+
+func GetMovieByIdModel(Id int64) (*Movies, *gorm.DB) {
+	var getMovie Movies
+	db.Where("ID=?", Id).Find(&getMovie)
+	return &getMovie, db
+}
+
+func DeleteMovieModel(Id int64) Movies {
+	var movie Movies
+	db.Where("ID=?", Id).Delete(movie)
+	return movie
+}

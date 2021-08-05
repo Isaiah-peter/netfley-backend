@@ -89,16 +89,9 @@ func FindOne(email string, password string) map[string]interface{} {
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	var user = &models.User{}
 	utils.ParseBody(r, user)
-	token, err := utils.VerifyToken(r)
-	if err != nil {
-		panic(err)
-	}
-	claim, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		panic(ok)
-	}
+	token := utils.UseToken(r)
 
-	ID, err := strconv.ParseInt(fmt.Sprintf("%.f", claim["UserID"]), 0, 0)
+	ID, err := strconv.ParseInt(fmt.Sprintf("%.f", token["UserID"]), 0, 0)
 	if err != nil {
 		fmt.Println("error while parsing")
 	}
@@ -126,16 +119,9 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetUserById(w http.ResponseWriter, r *http.Request) {
-	token, err := utils.VerifyToken(r)
-	if err != nil {
-		fmt.Println("error in verifying token or expire token")
-	}
-	claim, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		fmt.Println("token expired")
-	}
+	token := utils.UseToken(r)
 
-	ID, err := strconv.ParseInt(fmt.Sprintf("%.f", claim["UserID"]), 0, 0)
+	ID, err := strconv.ParseInt(fmt.Sprintf("%.f", token["UserID"]), 0, 0)
 	if err != nil {
 		fmt.Println("error while parsing")
 		log.Fatalln(err)
@@ -148,16 +134,9 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUser(w http.ResponseWriter, r *http.Request) {
-	token, err := utils.VerifyToken(r)
-	if err != nil {
-		fmt.Println("error in verifying token or expire token")
-	}
-	claim, ok := token.Claims.(jwt.MapClaims)
-	if !ok {
-		fmt.Println("token expired")
-	}
+	token := utils.UseToken(r)
 
-	ID, err := strconv.ParseInt(fmt.Sprintf("%.f", claim["UserID"]), 0, 0)
+	ID, err := strconv.ParseInt(fmt.Sprintf("%.f", token["UserID"]), 0, 0)
 	if err != nil {
 		fmt.Println("error while parsing")
 		log.Fatalln(err)

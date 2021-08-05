@@ -13,6 +13,7 @@ func main() {
 	r := mux.NewRouter()
 	routes.RegisterNetflixUser(r)
 	routes.CrudUser(r)
+	routes.Movies(r)
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe("Localhost:8000", r))
 }

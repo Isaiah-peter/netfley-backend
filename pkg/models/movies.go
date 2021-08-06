@@ -38,7 +38,7 @@ func (m *Movies) CreateMovie() *Movies {
 
 func GetMovieModel() []Movies {
 	var movie []Movies
-	db.Find(&movie).Limit(10)
+	db.Find(&movie)
 	return movie
 }
 

@@ -53,3 +53,9 @@ func DeleteMovieModel(Id int64) Movies {
 	db.Where("ID=?", Id).Delete(movie)
 	return movie
 }
+
+func GetMovieWhereTypeIsIsSeries(series bool) interface{} {
+	var movies []Movies
+	tvSeries := db.Where("is_series = ?", series).Find(&movies).Value
+	return tvSeries
+}

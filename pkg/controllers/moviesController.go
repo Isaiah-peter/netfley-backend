@@ -111,3 +111,17 @@ func GetRandomMovie(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }
+
+func GetMovieByType(w http.ResponseWriter, r *http.Request) {
+	utils.UseToken(r)
+	series := models.GetMovieWhereTypeIsIsSeries(true)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(series)
+}
+
+func GetMovieByTypeMovie(w http.ResponseWriter, r *http.Request) {
+	utils.UseToken(r)
+	series := models.GetMovieWhereTypeIsIsSeries(false)
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(series)
+}

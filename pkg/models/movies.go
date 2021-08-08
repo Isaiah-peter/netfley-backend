@@ -38,7 +38,7 @@ func (m *Movies) CreateMovie() *Movies {
 
 func GetMovieModel() []Movies {
 	var movie []Movies
-	db.Find(&movie).Limit(10)
+	db.Find(&movie)
 	return movie
 }
 
@@ -52,4 +52,10 @@ func DeleteMovieModel(Id int64) Movies {
 	var movie Movies
 	db.Where("ID=?", Id).Delete(movie)
 	return movie
+}
+
+func GetMovieWhereTypeIsIsSeries(series bool) interface{} {
+	var movies []Movies
+	tvSeries := db.Where("is_series = ?", series).Find(&movies).Value
+	return tvSeries
 }

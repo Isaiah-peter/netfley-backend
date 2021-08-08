@@ -5,17 +5,17 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var (
-	db *gorm.DB
-)
+var ()
 
 type List struct {
 	gorm.Model
 	Title   string `gorm:"unique"`
 	Type    string
-	genre   string
-	Content []string
+	Genre   string
+	Content []MyContent
 }
+
+type MyContent struct{}
 
 func init() {
 	config.Connect()

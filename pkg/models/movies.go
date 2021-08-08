@@ -5,9 +5,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
-var (
-	db *gorm.DB
-)
+var ()
 
 type Movies struct {
 	gorm.Model
@@ -16,11 +14,11 @@ type Movies struct {
 	Img      string
 	ImgTitle string
 	ImgSm    string
-	trailer  string
+	Trailer  string
 	Video    string
 	Year     string
 	Limit    int
-	genre    string
+	Genre    string
 	IsSeries bool `gorm:"default:false"`
 }
 
@@ -28,4 +26,30 @@ func init() {
 	config.Connect()
 	db = config.GetDB()
 	db.AutoMigrate(&Movies{})
+}
+
+//CREATE
+
+func (m *Movies) CreateMovie() *Movies {
+	db.NewRecord(m)
+	db.Create(m)
+	return m
+}
+
+func GetMovieModel() []Movies {
+	var movie []Movies
+	db.Find(&movie).Limit(10)
+	return movie
+}
+
+func GetMovieByIdModel(Id int64) (*Movies, *gorm.DB) {
+	var getMovie Movies
+	db.Where("ID=?", Id).Find(&getMovie)
+	return &getMovie, db
+}
+
+func DeleteMovieModel(Id int64) Movies {
+	var movie Movies
+	db.Where("ID=?", Id).Delete(movie)
+	return movie
 }

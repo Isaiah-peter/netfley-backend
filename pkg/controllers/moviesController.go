@@ -27,6 +27,7 @@ func CreateMovie(w http.ResponseWriter, r *http.Request) {
 		u := movie.CreateMovie()
 		res, _ := json.Marshal(u)
 		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Write(res)
 	}
 
@@ -49,6 +50,7 @@ func UpdateMovie(w http.ResponseWriter, r *http.Request) {
 		}
 		utils.ParseBody(r, movie)
 		movieDetail, db := models.GetMovieByIdModel(ID)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		db.Save(&movieDetail)
 	}
 
@@ -70,6 +72,7 @@ func GetMovieById(w http.ResponseWriter, r *http.Request) {
 	movieDetail, _ := models.GetMovieByIdModel(ID)
 	res, _ := json.Marshal(movieDetail)
 	w.Header().Set("Content-Type", "pkglication/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 
@@ -91,6 +94,7 @@ func DeleteMovie(w http.ResponseWriter, r *http.Request) {
 		models.DeleteMovieModel(ID)
 		res, _ := json.Marshal("the movie have been deleted")
 		w.Header().Set("Content-Type", "pkglication/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.WriteHeader(http.StatusOK)
 		w.Write(res)
 	}
@@ -108,6 +112,7 @@ func GetRandomMovie(w http.ResponseWriter, r *http.Request) {
 	Movie := models.GetMovieModel()
 	res, _ := json.Marshal(Movie)
 	w.Header().Set("Content-Type", "pkglication/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }
@@ -123,5 +128,6 @@ func GetMovieByTypeMovie(w http.ResponseWriter, r *http.Request) {
 	utils.UseToken(r)
 	series := models.GetMovieWhereTypeIsIsSeries(false)
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(series)
 }

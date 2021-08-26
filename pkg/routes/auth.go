@@ -17,4 +17,5 @@ var RegisterNetflixUser = func(router *mux.Router) {
 	}).Handler(router)
 
 	http.ListenAndServe("Localhost:8000", handler)
+
 }

@@ -34,6 +34,7 @@ func NewUser(w http.ResponseWriter, r *http.Request) {
 	u := newUser.NewUser()
 	res, _ := json.Marshal(u)
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Write(res)
 }
 
@@ -44,6 +45,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 	u := FindOne(newUser.Email, newUser.Password)
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(u)
 
 }
@@ -114,6 +116,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	if user.ProfilePic != nil {
 		userDetail.ProfilePic = user.ProfilePic
 	}
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	rd.Save(&userDetail)
 	fmt.Println("userDetailfmt:", userDetail.Username)
 }
@@ -129,6 +132,7 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 	userDetail, _ := models.GetUserById(ID)
 	res, _ := json.Marshal(userDetail)
 	w.Header().Set("Content-Type", "pkglication/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }
@@ -144,6 +148,7 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	user := models.DeleteUser(ID)
 	res, _ := json.Marshal(user)
 	w.Header().Set("Content-Type", "pkglication/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(http.StatusOK)
 	w.Write(res)
 }

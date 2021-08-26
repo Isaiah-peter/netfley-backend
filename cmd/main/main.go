@@ -14,7 +14,6 @@ func main() {
 	routes.RegisterNetflixUser(r)
 	routes.CrudUser(r)
 	routes.Movies(r)
-	routes.List(r)
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe("Localhost:8000", r))
 }

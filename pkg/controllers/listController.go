@@ -27,6 +27,7 @@ func CreateList(w http.ResponseWriter, r *http.Request) {
 		u := list.CreateList()
 		res, _ := json.Marshal(u)
 		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Write(res)
 	}
 
